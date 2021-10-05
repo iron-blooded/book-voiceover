@@ -7,8 +7,38 @@ import configparser
 import base64
 import json
 configF = configparser.ConfigParser()
-configF.read("config.ini")
-nameBook=str(configF['book']['nameBook'])
+try:
+    configF.read("config.ini")
+    nameBook=str(configF['book']['nameBook'])
+except:
+    print('Создан config.ini')
+    f = open('config.ini','w')
+    f.write('''[book]
+token='aaaaaaaaaaaa'
+; Ваш токен, который вы можете получить отправив в google tts любой запрос.
+speed=0.8
+; Скорость, с которой будет читать tts.
+directory=Солярис
+; Название каталога, в который будут итоговые записи.
+filename=synthesize-text-audio-
+; Название итогового аудиофайла. Учтите, что в конце будет стоять порядковый номер.
+threads=2
+; Количество потоков. Если вы поставите слишком много, скрипт изменит на максимально комфортное вашему процессору. Да и учитывайте, что google может не одобрить большое количество запросов.
+nameBook=text.txt
+; Название книги, из которая будет озвучиваться. Только *.txt.
+start=0
+; Указывает, с какого порядкового номера скрипту начинать озвучивать. Полезно, например, в случае если вы на середине книги осознали, что ударение на каком то слове неправильное.
+audioEncoding=LINEAR16
+; Указывает, в какой кодировке сервис будет возвращать озвучку. Идеальный для меня - LINEAR16. В нем отстутствуют какие либо артефакты звучания. Но если для вас размер итогового файла критичен, можете поставить mp3.
+name=ru-RU-Wavenet-D
+; Указывает, кто должен озвучивать книгу. На сайте https://cloud.google.com/text-to-speech/ можете посмотреть, кто вам больше всего заходит.
+glossary=TTS.lexx
+; Указывает название словаря, из которого будут парситься исправления ударений.
+split="\\n"
+; Указывает, по каким знакам разбивать текст''')
+    f.close()
+    configF.read("config.ini")
+    nameBook=str(configF['book']['nameBook'])
 f = open(nameBook)
 text = f.read()
 f.close()
@@ -101,7 +131,6 @@ def sendText(text2,data,i):
     ('url', 'https://texttospeech.googleapis.com/v1test1/text:synthesize'),
     ('token', token),
     )
-    print(token)
     error=1
     while error!=0:
         data = ('{"input":{"text":"'+str(text2)+'"},"voice":{"languageCode":"ru-RU","name":"'+str(configF['book']['name'])+'"},"audioConfig":{"audioEncoding":"'+str(configF['book']['audioEncoding'])+'","pitch":0,"speakingRate":'+speed+'}}').encode('utf-8')
