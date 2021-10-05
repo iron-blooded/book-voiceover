@@ -128,13 +128,13 @@ def sendText(text2,data,i):
     'accept-language': 'ru-RU,ru;q=0.9',
     }
     params = (
-    ('url', 'https://texttospeech.googleapis.com/v1test1/text:synthesize'),
+    ('url', 'https://texttospeech.googleapis.com/v1beta1/text:synthesize'),
     ('token', token),
     )
     error=1
     while error!=0:
         data = ('{"input":{"text":"'+str(text2)+'"},"voice":{"languageCode":"ru-RU","name":"'+str(configF['book']['name'])+'"},"audioConfig":{"audioEncoding":"'+str(configF['book']['audioEncoding'])+'","pitch":0,"speakingRate":'+speed+'}}').encode('utf-8')
-        response = requests.post('http://cxl-services.appspot.com/proxy', headers=headers, params=params, data=data)
+        response = requests.post('https://cxl-services.appspot.com/proxy', headers=headers, params=params, data=data)
         response=response.text.encode().decode()
         error=0
         if response != '' and response !=' Service Unavailable' and response != 'Service Unavailable' and response != 'Unauthorized':
