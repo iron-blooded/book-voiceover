@@ -1,8 +1,6 @@
 import requests
-import os
 import multiprocessing
 import time
-import random
 import configparser
 import base64
 import json
@@ -73,6 +71,7 @@ def compil(i,textjs):
     try:
         f = open(direct+'/'+filename+str(i)+'.mp3','wb')
     except:
+        import os
         os.mkdir(direct)
         f = open(direct+'/'+filename+str(i)+'.mp3','wb')
     f.write(base64.b64decode(audio_content))
@@ -163,20 +162,28 @@ def osnov(text,trii,lli):
     i=sendTex[0]
     text2=sendTex[1]
     return(i)
-
-ii=razbivN(text)
-lli=ii[1]
-ii=int(ii[0])
-trii=int(configF['book']['start'])
-boolThreads=int(configF['book']['threads'])
-if boolThreads > int(multiprocessing.cpu_count()):
-    boolThreads = int(multiprocessing.cpu_count())
-    print('вы выставили слишком большое кол-во потоков, ваш пк не поддерживает столько.')
-while trii < ii:
-    if len(multiprocessing.active_children()) < boolThreads:
-        print(str(trii)+'('+str((trii*100)//ii)+'%)')
-        my_thread = multiprocessing.Process(target=osnov, args=(text,trii,lli,))
-        my_thread.start()
-        trii+=1
-        time.sleep(1)
+if __name__ == '__main__':
+    ii=razbivN(text)
+    lli=ii[1]
+    ii=int(ii[0])
+    trii=int(configF['book']['start'])
+    boolThreads=int(configF['book']['threads'])
+    try:
+        if boolThreads > int(multiprocessing.cpu_count()):
+            #boolThreads = int(multiprocessing.cpu_count())
+            print('вы выставили слишком большое кол-во потоков. Уменьшите до '+str(multiprocessing.cpu_count()))
+        while trii < ii:
+            if len(multiprocessing.active_children()) < boolThreads:
+                print(str(trii)+'('+str((trii*100)//ii)+'%)')
+                my_thread = multiprocessing.Process(target=osnov, args=(text,trii,lli,))
+                my_thread.start()
+                trii+=1
+                time.sleep(1)
+    except:
+        print("что то в потоках выбило ошибку, используется вариант без мультипроцессинга")
+        while trii < ii:
+            print(str(trii)+'('+str((trii*100)//ii)+'%)')
+            osnov(text,trii,lli)
+            trii+=1
+            time.sleep(1)
 print('Конец')
