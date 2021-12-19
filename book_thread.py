@@ -186,4 +186,6 @@ if __name__ == '__main__':
             osnov(text,trii,lli)
             trii+=1
             time.sleep(1)
+else:
+    print('Скрипт необходимо запускать не как модуль')
 print('Конец')
