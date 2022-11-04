@@ -85,12 +85,14 @@ def razbivN(text):
     while (len(text)-1) > i:
         try:
             text2=''
-            while len(text2+splitt+str(text[i]))<4899:
+            while len(bytes(text2+splitt+str(text[i]), encoding = 'utf-8'))<4899:
                 if text2 != str(text[i]):
                     text2=text2+splitt+str(text[i])
                 i=i+1
+            if text2 == '':
+                raise SystemExit('В тексте есть слишком большие куски. Поставьте в конфиге разбитие по точке "." или же, в крайнем случае, по проблелу " "')
             ioi.append(i)
-        except:
+        except Exception:
             i=i
         ii+=1
     return(ii,ioi)
@@ -98,7 +100,7 @@ def razbiv(lii,text):
     i=lii
     text2=''
     try:
-        while len(text2+splitt+str(text[i]))<4899:
+        while len(bytes(text2+splitt+str(text[i]), encoding = 'utf-8'))<4899:
             if text2 != str(text[i]):
                 text2=text2+splitt+str(text[i])
             i=i+1
